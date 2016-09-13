@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <h1>Controlled input</h1>
+    <p>Results will display when complete</p>
+
+    <div id="container">Loading...</div>
+    <pre id="output"></pre>
+
+    <script src="https://cdn.jsdelivr.net/lodash/4.14.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.1/benchmark.min.js"></script>
+
+    <script src="lib/react.min.js"></script>
+
+    <script src="lib/react-dom.control.min.js"></script>
+
+    <script>
+      ReactDOMControl = ReactDOM;
+    </script>
+
+    <script src="lib/react-dom.experiment.min.js"></script>
+
+    <script>
+      ReactDOMExp = ReactDOM;
+    </script>
+
+    <div id="control"></div>
+    <div id="experiment"></div>
+
+    <script>
+      var suite = new Benchmark.Suite
+      var output = document.getElementById('output')
+      var identity = function (n) {}
+
+      var btnControl = ReactDOMControl.render(React.createElement('button', { onClick: identity }), control)
+      var btnExp = ReactDOMExp.render(React.createElement('button', { onClick: identity }), experiment)
+
+      suite.add('CONTROL', function() {
+        btnControl.click()
+      })
+
+      suite.add('EXPERIMENT', function() {
+        btnExp.click()
+      })
+
+      suite.on('error', function (error) { console.error(error) })
+
+      suite.on('complete', function() {
+        this.forEach(function (trial) {
+          output.innerHTML += '\n' + [trial.name, trial.count, '(+= ' + trial.stats.rme + ')'].join(' ')
+        })
+
+        output.innerHTML += '\n\nFastest is ' + this.filter('fastest').map('name')
+      })
+
+      suite.run({ async: true })
+    </script>
+  </body>
+</html>

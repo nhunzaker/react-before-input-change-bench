@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <ol>
+      <li>Go to chrome dev tools</li>
+      <li>Record allocation profile</p>
+      <li>Execute "go()" in the console</li>
+    </ol>
+
+    <script src="https://cdn.jsdelivr.net/lodash/4.14.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.1/benchmark.min.js"></script>
+
+    <script src="lib/react.min.js"></script>
+
+    <script src="lib/react-dom.control.min.js"></script>
+
+    <script>
+      ReactDOMControl = ReactDOM;
+    </script>
+
+    <script src="lib/react-dom.experiment.min.js"></script>
+
+    <script>
+      ReactDOMExp = ReactDOM;
+    </script>
+
+    <div id="control"></div>
+    <div id="experiment"></div>
+
+    <script>
+      var CLICKS = 10000
+      var button = React.createElement('button', { onClick: function() {} })
+
+      function control () {
+        var container = document.getElementById('control')
+        var btnControl = ReactDOMControl.render(button, container)
+
+        for (var i = 0; i < CLICKS; i++) {
+          btnControl.click()
+        }
+
+        ReactDOMControl.unmountComponentAtNode(container)
+      }
+
+      function experiment () {
+        var container = document.getElementById('experiment')
+        var btnExp = ReactDOMExp.render(button, container)
+
+        for (var i = 0; i < CLICKS; i++) {
+          btnExp.click()
+        }
+
+        ReactDOMExp.unmountComponentAtNode(container)
+      }
+
+      function go () {
+        control()
+        experiment()
+      }
+    </script>
+  </body>
+</html>
